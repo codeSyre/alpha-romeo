@@ -10,15 +10,9 @@ const anthropic = createAnthropic({
     }
 })
 
-const model = anthropic("claude-3-7-sonnet-20250219")
+const model = anthropic("claude-3-sonnet-20240229")
 
 export async function POST(req: Request) {
-
-    const user = await currentUser()
-
-    if(!user || !user.id){
-        return new NextResponse("Unauthorized", { status: 401 })
-    }
 
     const { messages, videoId } = await req.json()
 
