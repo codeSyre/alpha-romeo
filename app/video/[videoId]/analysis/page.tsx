@@ -1,5 +1,6 @@
 "use client"
 
+import AiAgentChat from '@/components/AiAgentChat'
 import ThumbnailGeneration from '@/components/ThumbnailGeneration'
 import TitleGenerations from '@/components/TitleGenerations'
 import Transcriptions from '@/components/Transcriptions'
@@ -11,7 +12,7 @@ import React from 'react'
 
 export default function AnalysisPage() {
     const params = useParams()
-    const {videoId} = params
+    const {videoId} = params as {videoId: string}
 
     return (
         <div className='xl:container mx-auto px-4 md:px-0'>
@@ -44,6 +45,7 @@ export default function AnalysisPage() {
                 {/* Right Side  */}
                 <div className='order-1 lg:order-2 lg:sticky lg:top-20 h-[500px] md:h-[calc(100vh-6rem)]'>
                     {/* AI Agent Chat */}
+                    <AiAgentChat videoId={videoId}/>
                 </div>
             </div>
         </div>
