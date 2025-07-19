@@ -10,7 +10,7 @@ interface TranscriptEntry {
     timestamp: string
 }
 
-export default function Transcriptions() {
+export default function Transcriptions({videoId}: {videoId: string}) {
     const [transcript, setTranscript] = useState<{
         transcript: TranscriptEntry,
         cache: string

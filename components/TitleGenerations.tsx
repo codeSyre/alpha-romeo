@@ -6,7 +6,7 @@ import { FeatureFlag } from '@/features/flags'
 import { useSchematicEntitlement } from '@schematichq/schematic-react'
 import { Copy } from 'lucide-react'
 
-export default function TitleGenerations() {
+export default function TitleGenerations({videoId}: {videoId: string}) {
 
     const titles: any = []
 

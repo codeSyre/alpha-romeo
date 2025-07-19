@@ -1,7 +1,8 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { streamText } from "ai";
+import { convertToModelMessages, streamText, UIMessage } from "ai";
 
 const anthropic = createAnthropic({
     apiKey: process.env.CLAUDE_API_KEY,
@@ -14,14 +15,14 @@ const model = anthropic("claude-3-sonnet-20240229")
 
 export async function POST(req: Request) {
 
-    const { messages, videoId } = await req.json()
+    const { messages, videoId }: { messages: UIMessage[], videoId: string } = await req.json()
 
     const result = streamText({
-        model,
-        messages
+        model: google("gemini-2.5-pro", {
+            apiKey: process.env.GOOGLE_API_KEY
+        }),
+        messages: convertToModelMessages(messages)
     })
 
-    console.log("result :::: ", result.toDataStreamResponse())
-
-    return result.toDataStreamResponse()
+    return result.toUIMessageStreamResponse()
 } 

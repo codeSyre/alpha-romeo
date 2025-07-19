@@ -1,17 +1,21 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useChat } from '@ai-sdk/react';
 import { useUser } from '@clerk/nextjs';
 import { Button } from './ui/button';
+import { DefaultChatTransport } from 'ai';
 
 export default function AiAgentChat({ videoId }: { videoId: string }) {
-    const { messages, input, handleInputChange, handleSubmit } = useChat({
-        api: '/api/chat',
-        maxSteps: 5,
-        body: {
-            videoId
-        }
+  const [input, setInput] = useState("");
+    const { messages, sendMessage, status } = useChat({
+        transport: new DefaultChatTransport({
+            api: '/api/chat',
+            body: {
+                videoId
+            },
+        }),
+        maxSteps: 5
     });
 
     const user = useUser()
@@ -50,7 +54,7 @@ export default function AiAgentChat({ videoId }: { videoId: string }) {
                                     <p className='font-semibold'>
                                         {m.role === 'user' ? 'You' : 'Alpha Romeo'}
                                     </p>
-                                    <p>{m.content}</p>
+                                    {m.parts.map((part, index) => part.type === "text" ? <span key={index}>{part.text}</span> : null)}
                                 </div>
                             </div>
                         </div>
@@ -61,8 +65,14 @@ export default function AiAgentChat({ videoId }: { videoId: string }) {
             {/* Input Form  */}
             <div className='border-t border-gray-100 p-4 bg-white'>
                 <div className='space-y-3'>
-                    <form onSubmit={handleSubmit} className='flex gap-2'>
-                        <input value={input} onChange={handleInputChange} type="text" placeholder='Type your question...' className='flex-1 px-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent' />
+                    <form onSubmit={e => {
+                        e.preventDefault();
+                        if (input.trim()) {
+                            sendMessage({ text: input })
+                            setInput('')
+                        }
+                    }} className='flex gap-2'>
+                        <input value={input} onChange={e => setInput(e.target.value)} type="text" placeholder='Type your question...' className='flex-1 px-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent' />
                         <Button type='submit' className='px-4 py-2 bg-blue-500 text-white text-sm rounded-full hover:to-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>Ask</Button>
                     </form>
                 </div>
