@@ -5,9 +5,10 @@ import { useChat } from '@ai-sdk/react';
 import { useUser } from '@clerk/nextjs';
 import { Button } from './ui/button';
 import { DefaultChatTransport } from 'ai';
+import ReactMarkdown from 'react-markdown';
 
 export default function AiAgentChat({ videoId }: { videoId: string }) {
-  const [input, setInput] = useState("");
+    const [input, setInput] = useState("");
     const { messages, sendMessage, status } = useChat({
         transport: new DefaultChatTransport({
             api: '/api/chat',
@@ -45,19 +46,35 @@ export default function AiAgentChat({ videoId }: { videoId: string }) {
                     )}
 
                     {messages.map((m) => (
-                        <div key={m.id} className="">
-                            <div className='flex gap-3'>
-                                <div className='w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center'>
-                                    {m.role === "user" ? "U" : "A"}
-                                </div>
-                                <div className='flex-1'>
-                                    <p className='font-semibold'>
-                                        {m.role === 'user' ? 'You' : 'Alpha Romeo'}
-                                    </p>
-                                    {m.parts.map((part, index) => part.type === "text" ? <span key={index}>{part.text}</span> : null)}
-                                </div>
+                        <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                            <div className={`max-w-[85%] ${m.role === "user" ? "bg-blue-500" : "bg-gray-100"} rounded-2xl px-4 py-2`}>
+                                {m.parts && m.role === "assistant" ? (
+                                    <div className='space-y-3'>
+                                        {m.parts.map((part, index) => part.type === "text" ?
+                                            <div className='prose prose-sm max-w-none'>
+                                                <ReactMarkdown key={index}>{part.text}</ReactMarkdown>
+                                            </div> : null)}
+                                    </div>
+                                ) : (
+                                    <div className='prose prose-sm max-w-none text-white'>
+                                        {m.parts.map((part, index) => part.type === "text" ? <ReactMarkdown key={index}>{part.text}</ReactMarkdown> : null)}
+                                    </div>
+                                )}
                             </div>
                         </div>
+                        // <div key={m.id} className="">
+                        //     <div className='flex gap-3'>
+                        //         <div className='w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center'>
+                        //             {m.role === "user" ? "U" : "A"}
+                        //         </div>
+                        //         <div className='flex-1'>
+                        //             <p className='font-semibold'>
+                        //                 {m.role === 'user' ? 'You' : 'Alpha Romeo'}
+                        //             </p>
+                        //             {m.parts.map((part, index) => part.type === "text" ? <span key={index}>{part.text}</span> : null)}
+                        //         </div>
+                        //     </div>
+                        // </div>
                     ))}
                 </div>
             </div>
