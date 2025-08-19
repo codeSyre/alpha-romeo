@@ -18,7 +18,7 @@ export async function getTempAccessToken() {
     if(!user) return null
 
     const response = await client.accesstokens.issueTemporaryAccessToken({
-        resourceType: "company",
+        // resourceType: "company",
         lookup: {
             id: user.id
         }

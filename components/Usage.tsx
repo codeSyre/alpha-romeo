@@ -70,11 +70,11 @@ export default function Usage({
 
     const progress = ((featureUsage || 0) / (featureAllocation || 1)) * 100
 
-    const getProgressColor = (percent: number) => {
-        if (percent >= 80) return "[&>*]:bg-red-600"
-        if (percent >= 50) return "[&>*]:bg-yellow-500"
-        return "[&>*]:bg-green-500"
-    }
+    // const getProgressColor = (percent: number) => {
+    //     if (percent >= 80) return "[&>*]:bg-red-600"
+    //     if (percent >= 50) return "[&>*]:bg-yellow-500"
+    //     return "[&>*]:bg-green-500"
+    // }
 
     // const progressColor = getProgressColor(progress)
 

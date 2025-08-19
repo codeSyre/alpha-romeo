@@ -50,10 +50,21 @@ export async function POST(req: Request) {
                 }),
                 execute: async ({ videoId }) => {
 
-                    const transcript = await getYoutubeTranscript(videoId);
+                    const transcriptResult = await getYoutubeTranscript(videoId);
+
+                    // If the result is a Response object, you might need to parse it first
+                    if (transcriptResult instanceof Response) {
+                        const data = await transcriptResult.json();
+                        return {
+                            transcript: data.transcript,
+                            cache: data.cache
+                        };
+                    }
+
+                    // Otherwise, assume it's already the structured object
                     return {
-                        cache: transcript.cache,
-                        transcript: transcript.transcript,
+                        transcript: transcriptResult.transcript,
+                        cache: transcriptResult.cache
                     };
                 }
             }),
@@ -74,10 +85,10 @@ export async function POST(req: Request) {
                 inputSchema: z.object({
                     url: z.string().describe("The URL to extract the video ID from")
                 }),
-                execute: async ({url})=>{
+                execute: async ({ url }) => {
                     const vidId = await getVideoIdFromUrl(url)
 
-                    return {vidId}
+                    return { vidId }
                 }
             }),
             generateTitle: tool({
@@ -88,10 +99,10 @@ export async function POST(req: Request) {
                     videoSummary: z.string().describe("The summary of the video to generate the title for"),
                     considerations: z.string().describe("Any additional considerations for the title"),
                 }),
-                execute: async ({videoId, videoSummary, considerations})=>{
+                execute: async ({ videoId, videoSummary, considerations }) => {
                     const title = await titleGeneration(videoId, videoSummary, considerations)
 
-                    return {title}
+                    return { title }
                 }
             })
             // generateImage: generateImage(user.id, videoId)
