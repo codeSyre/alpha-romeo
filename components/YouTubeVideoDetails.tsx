@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Eye, LucideCalendarFold, MessageCircle, ThumbsUp } from 'lucide-react'
 
-export default function YouTubeVideoDetails({ videoId }: { videoId: any }) {
+export default function YouTubeVideoDetails({ videoId }: { videoId: string }) {
     const [video, setVideo] = useState<VideoDetails | null>(null)
 
     useEffect(() => {

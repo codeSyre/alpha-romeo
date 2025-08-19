@@ -11,10 +11,21 @@ export default tool({
     description: "Fetch the transcript of a youtube video in segments",
     inputSchema: schema,
     execute: async ({ videoId }) => {
-        const transcript = await getYoutubeTranscript(videoId);
+        const transcriptResult = await getYoutubeTranscript(videoId);
+
+        // If the result is a Response object, you might need to parse it first
+        if (transcriptResult instanceof Response) {
+            const data = await transcriptResult.json();
+            return {
+                transcript: data.transcript,
+                cache: data.cache
+            };
+        }
+
+        // Otherwise, assume it's already the structured object
         return {
-            transcript: transcript.transcript,
-            cache: transcript.cache
+            transcript: transcriptResult.transcript,
+            cache: transcriptResult.cache
         };
     }
 });

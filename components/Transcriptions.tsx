@@ -29,7 +29,12 @@ export default function Transcriptions({ videoId }: { videoId: string }) {
             }
 
             const result = await getYoutubeTranscript(videoId)
-            setTranscript(result as any)
+            if (result instanceof Response) {
+                const data = await result.json();
+                setTranscript(data);
+            } else {
+                setTranscript(result);
+            }
         }, [featureUsageExceeded])
 
     useEffect(() => {

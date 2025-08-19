@@ -7,11 +7,19 @@ import { FeatureFlag } from '@/features/flags'
 import Image from 'next/image'
 import { useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
 
 export default function ThumbnailGeneration({ videoId }: { videoId: string }) {
     const user = useUser()
 
-    const images: any = useQuery(api.images.getImages, {
+    const images: {
+        url: string | null;
+        _id: Id<"images">;
+        _creationTime: number;
+        videoId: string;
+        userId: string;
+        storageId: Id<"_storage">;
+    }[] | undefined = useQuery(api.images.getImages, {
         videoId,
         userId: user?.user?.id ?? ""
     })
@@ -23,12 +31,12 @@ export default function ThumbnailGeneration({ videoId }: { videoId: string }) {
             
             {/* Simple horizontal scroll of images  */}
             <div className={`flex overflow-x-auto gap-4 ${images?.length && "mt-4"}`}>
-                {images?.map((image: any)=>{
-                    image.url && (
+                {images?.map((image)=>{
+                    return image.url && (
                         <div key={image._id} className='flex-none w-[200px] h-[110px] rounded-lg overflow-x-auto'>
                             <Image
                         src={image.url}
-                        alt={image.title}
+                        alt={image.storageId}
                         width={200}
                         height={200}
                         className='object-cover'
